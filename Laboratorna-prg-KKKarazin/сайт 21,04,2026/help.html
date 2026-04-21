@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="windows-1251">
+    <title>Довідка — Коло балансу життя</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background: linear-gradient(to bottom, #0a246a, #a0c4ff);
+            margin: 0;
+            padding: 40px 0;
+            height: 100vh;
+        }
+
+        .window {
+            width: 820px;
+            margin: 0 auto;
+            background: #c0c0c0;
+            border: 2px solid #dfdfdf;
+            border-top-color: #fff;
+            border-left-color: #fff;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .title-bar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            padding: 5px 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .content {
+            padding: 25px;
+            background: #c0c0c0;
+            line-height: 1.6;
+        }
+
+        h1 { color: #000080; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <span>Довідка — Що таке Коло балансу життя?</span>
+            <div style="cursor:pointer;" onclick="window.location.href='index.html'">?</div>
+        </div>
+
+        <div class="content">
+            <h1>Що таке Коло балансу життя?</h1>
+            <p>Це інструмент для оцінки того, наскільки гармонійно ви живете.</p>
+            <p>Ви оцінюєте 9 основних сфер життя від 0 до 10 балів.</p>
+            <p>Після заповнення система показує:</p>
+            <ul>
+                <li>Загальний середній баланс</li>
+                <li>Наскільки рівномірно розподілені ваші зусилля</li>
+                <li>Порівняння з середніми показниками інших людей</li>
+            </ul>
+            <p><b>Чим нижче коефіцієнт варіації — тим більш збалансоване ваше життя.</b></p>
+
+            <p style="margin-top:30px; text-align:center;">
+                <button onclick="window.location.href='index.html'" style="padding:10px 20px; font-size:16px;">
+                    Повернутися до оцінки
+                </button>
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

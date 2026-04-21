@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="windows-1251">
+    <title>Результати — Коло балансу життя</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background: linear-gradient(to bottom, #0a246a, #a0c4ff);
+            margin: 0;
+            padding: 40px 0;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        .window {
+            width: 920px;
+            max-width: 95%;
+            margin: 0 auto;
+            background: #c0c0c0;
+            border: 2px solid #dfdfdf;
+            border-top-color: #fff;
+            border-left-color: #fff;
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.6);
+        }
+
+        .title-bar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            padding: 5px 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-bar-buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-xp {
+            width: 22px;
+            height: 20px;
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-bottom-color: #808080;
+            border-right-color: #808080;
+            text-align: center;
+            font-size: 14px;
+            line-height: 16px;
+            cursor: pointer;
+        }
+
+        .content {
+            padding: 25px;
+            background: #c0c0c0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 20px 0;
+            font-size: 24px;
+            color: #000080;
+        }
+
+        canvas {
+            background: white;
+            border: 3px solid #808080;
+            margin: 20px auto;
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 2px solid #808080;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #808080;
+            text-align: center;
+        }
+
+        th {
+            background: #000080;
+            color: white;
+        }
+
+        .stat {
+            background: #ffffe0;
+            padding: 12px;
+            border: 2px inset #fff;
+            margin: 15px 0;
+            font-size: 15px;
+        }
+
+        .back-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(#f0f0f0, #c0c0c0);
+            border: 2px solid #fff;
+            border-bottom-color: #808080;
+            border-right-color: #808080;
+            font-size: 17px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <span>Результати — Коло балансу життя</span>
+            <div class="title-bar-buttons">
+                <div class="btn-xp">_</div>
+                <div class="btn-xp">?</div>
+                <div class="btn-xp">?</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <h1>Ваш баланс життя</h1>
+
+            <canvas id="balanceChart" width="700" height="400"></canvas>
+
+            <div id="resultsText"></div>
+
+            <h2 style="margin-top:30px; color:#000080;">Порівняння з іншими користувачами</h2>
+            <table id="comparisonTable"></table>
+
+            <a href="index.html" class="back-btn">< Повернутися до форми</a>
+        </div>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('userBalance'));
+        const labels = ["Карьєра", "Фінанси", "Сім'я", "Навколишнє середовище", "Саморозвиток", 
+                       "Нові навички", "Відпочинок", "Здоров'я", "Розваги"];
+        const userValues = Object.values(userData);
+
+        const avgValues = [6.8, 5.9, 7.2, 6.5, 7.8, 6.3, 6.1, 7.0, 6.7];
+
+        const sum = userValues.reduce((a, b) => a + b, 0);
+        const avg = (sum / userValues.length).toFixed(1);
+        const variance = userValues.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / userValues.length;
+        const stdDev = Math.sqrt(variance).toFixed(2);
+        const cv = ((stdDev / avg) * 100).toFixed(1);
+
+        document.getElementById('resultsText').innerHTML = `
+            <div class="stat"><strong>Середній баланс:</strong> ${avg} з 10</div>
+            <div class="stat"><strong>Дисперсія:</strong> ${variance.toFixed(2)}</div>
+            <div class="stat"><strong>Стандартне відхилення:</strong> ${stdDev}</div>
+            <div class="stat"><strong>Коефіцієнт варіації:</strong> ${cv}% 
+                ${cv > 25 ? '(дуже велика нестабільність)' : cv > 15 ? '(середня нестабільність)' : '(стабільно)'}
+            </div>
+        `;
+
+        new Chart(document.getElementById('balanceChart'), {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Ваші значення',
+                        data: userValues,
+                        borderColor: '#ff0000',
+                        backgroundColor: 'rgba(255, 0, 0, 0.25)',
+                        borderWidth: 4,
+                        pointBackgroundColor: '#ff0000'
+                    },
+                    {
+                        label: 'Середнє по користувачах',
+                        data: avgValues,
+                        borderColor: '#000080',
+                        backgroundColor: 'rgba(0, 40, 128, 0.2)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#000080'
+                    }
+                ]
+            },
+            options: {
+                scales: { r: { min: 0, max: 10, ticks: { stepSize: 2 } } },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        let tableHTML = `<tr><th>Сфера життя</th><th>Ви</th><th>Середнє по базі</th><th>Різниця</th></tr>`;
+        labels.forEach((label, i) => {
+            const diff = (userValues[i] - avgValues[i]).toFixed(1);
+            tableHTML += `<tr>
+                            <td><b>${label}</b></td>
+                            <td><b>${userValues[i]}</b></td>
+                            <td>${avgValues[i]}</td>
+                            <td style="color:${diff >= 0 ? 'green' : 'red'}">${diff >= 0 ? '+' : ''}${diff}</td>
+                         </tr>`;
+        });
+        document.getElementById('comparisonTable').innerHTML = tableHTML;
+    </script>
+</body>
+</html>
